@@ -16,13 +16,18 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 
 def get_pdf_text(pdf_docs):
-    text=""
+    text = ""
+    if not pdf_docs:
+        st.error("No PDF files uploaded.")
+        return text
     for pdf in pdf_docs:
-        pdf_reader= PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text+= page.extract_text()
-    return  text
-
+        try:
+            pdf_reader = PdfReader(pdf)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        except Exception as e:
+            st.error(f"Error processing PDF: {e}")
+    return text
 
 
 def get_text_chunks(text):
